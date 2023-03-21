@@ -1,0 +1,45 @@
+{
+  "name": "@zentest/playwright-reporter",
+  "version": "1.0.0",
+  "description": "Playwright Reporter for ZenTest",
+  "keywords": [
+    "test",
+    "testing",
+    "zentest",
+    "playwright",
+    "reporter"
+  ],
+  "license": "BSD-3-Clause",
+  "author": {
+    "name": "Daniel Rearden",
+    "email": "danielrearden@gmail.com",
+    "url": "https://github.com/danielrearden"
+  },
+  "type": "module",
+  "exports": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.31.2",
+    "@zentest/api": "workspace:*",
+    "formdata-node": "^5.0.0",
+    "got": "^12.6.0",
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "tsx": "^3.12.5",
+    "typescript": "^4.9.3",
+    "vite": "^4.2.0",
+    "vitest": "^0.29.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

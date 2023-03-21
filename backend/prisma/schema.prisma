@@ -1,0 +1,106 @@
+generator dev {
+  provider = "prisma-client-js"
+  output = "../src/generated/prisma"
+}
+
+generator build {
+  provider = "prisma-client-js"
+  output = "../dist/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ZENTEST_DATABASE_URL")
+}
+
+model Target {
+  id Int @id @default(autoincrement())
+  label String
+  apiKey String @unique @default(uuid())
+  reports Report[]
+  createdAt DateTime @default(now())
+}
+
+model Report {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  label String
+  url String?
+  testResults TestResult[]
+  targetId Int
+  target Target @relation(fields: [targetId], references: [id], onDelete: Cascade)
+  uid String @unique
+}
+
+model TestCase {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  filePath String
+  titleLong String
+  titleShort String
+  testResults TestResult[]
+  @@unique([filePath, titleLong])
+}
+
+enum TestResultStatus {
+  PASSED
+  FAILED
+  FLAKY
+  SKIPPED
+}
+
+model TestResult {
+  id Int @id @default(autoincrement())
+  annotations Annotation[]
+  attachments Attachment[]
+  createdAt DateTime @default(now())
+  cwd String
+  durationMs Int
+  errors Error[]
+  projectName String?
+  repeatEachIndex Int
+  retryIndex Int
+  reporter String
+  reportId Int
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  runId String
+  shardIndex Int?
+  status TestResultStatus
+  startedAt DateTime
+  stderr String?
+  stdout String?
+  testCaseId Int
+  testCase TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
+}
+
+model Attachment {
+  id Int @id @default(autoincrement())
+  contentType String
+  createdAt DateTime @default(now())
+  isPlaywrightTrace Boolean
+  originalName String
+  testResultId Int
+  testResult TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+  uploadBucketName String
+  uploadObjectName String
+}
+
+model Annotation {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  description String?
+  testResultId Int
+  testResult TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+  type String
+}
+
+model Error {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  filePath String?
+  fingerprint String
+  message String
+  stack String?
+  testResultId Int
+  testResult TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+}

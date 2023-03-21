@@ -1,0 +1,23 @@
+{
+  "name": "@zentest/api",
+  "version": "1.0.0",
+  "license": "BSD-3-Clause",
+  "author": {
+    "name": "Daniel Rearden",
+    "email": "danielrearden@gmail.com",
+    "url": "https://github.com/danielrearden"
+  },
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
+  "dependencies": {
+    "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "typescript": "^4.9.3"
+  }
+}

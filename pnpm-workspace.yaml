@@ -1,0 +1,6 @@
+packages:
+  - "api"
+  - "backend"
+  - "frontend"
+  - "reporters/*"
+  - "website"
