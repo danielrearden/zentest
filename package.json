@@ -8,6 +8,6 @@
     "prettier": "^2.8.5"
   },
   "scripts": {
-    "build": "pnpm --filter api build && pnpm --filter backend build && pnpm --filter frontend build && mv frontend/dist backend/dist/public && pnpm --filter '*reporter' build"
+    "build": "pnpm --filter api build && pnpm --filter backend build && pnpm --filter frontend build && mv frontend/dist backend/dist/public"
   }
 }

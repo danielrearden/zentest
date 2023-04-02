@@ -23,6 +23,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "tsx watch src/index.ts",
+    "prepare": "rm -rf dist && tsc",
     "test": "vitest"
   },
   "dependencies": {

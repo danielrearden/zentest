@@ -3,7 +3,7 @@ import { execSync } from "child_process";
 export const migrate = async () => {
   console.log("Applying migrations...");
 
-  execSync("pnpx prisma migrate deploy");
+  execSync("pnpm --filter backend prisma migrate deploy");
 
   console.log("Migrations applied");
 };

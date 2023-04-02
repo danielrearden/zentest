@@ -37,7 +37,6 @@ need to do anything other than make sure the database exists and is accessible.
 
 | Environment Variable         | Required | Description                                            |
 | ---------------------------- | -------- | ------------------------------------------------------ |
-| `ZENTEST_PORT`               | NO       | Port used by the ZenTest server. Defaults to 3000.     |
 | `ZENTEST_PUBLIC_URL`         | YES      | The URL at which your ZenTest server will be available |
 | `ZENTEST_DATABASE_URL`       | YES      | URL for Postgres database that will be used by ZenTest |
 | `ZENTEST_STORAGE_URL`        | YES      | URL for storage provider that will be used by ZenTest  |

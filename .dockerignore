@@ -1,0 +1,12 @@
+**/generated
+**/node_modules
+**/playwright-report
+**/test-results
+
+.env
+cspell.yaml
+data
+playwright.config.ts
+reporters
+tests
+website
