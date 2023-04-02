@@ -86,6 +86,7 @@ CREATE TABLE "Error" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "filePath" TEXT,
+    "fingerprint" TEXT NOT NULL,
     "message" TEXT NOT NULL,
     "stack" TEXT,
     "testResultId" INTEGER NOT NULL,
