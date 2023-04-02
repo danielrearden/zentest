@@ -34,15 +34,32 @@ need to do anything other than make sure the database exists and is accessible.
 :::
 
 #### Environment Variables
-| Environment Variable | Required | Description |
-| --- | --- | --- |
-| `ZENTEST_PORT` | NO | Port used by the ZenTest server. Defaults to 3000. |
-| `ZENTEST_PUBLIC_URL` | YES | The URL at which your ZenTest server will be available |
-| `ZENTEST_DATABASE_URL` | YES | URL for Postgres database that will be used by ZenTest |
-| `ZENTEST_STORAGE_URL` | YES | URL for storage provider that will be used by ZenTest |
-| `ZENTEST_STORAGE_BUCKET` | YES | The bucket ZenTest will use for storing uploaded files |
-| `ZENTEST_STORAGE_ACCESS_KEY` | YES | Access key for the storage provider |
-| `ZENTEST_STORAGE_SECRET_KEY` | YES | Secret key for the storage provider |
+
+| Environment Variable         | Required | Description                                            |
+| ---------------------------- | -------- | ------------------------------------------------------ |
+| `ZENTEST_PORT`               | NO       | Port used by the ZenTest server. Defaults to 3000.     |
+| `ZENTEST_PUBLIC_URL`         | YES      | The URL at which your ZenTest server will be available |
+| `ZENTEST_DATABASE_URL`       | YES      | URL for Postgres database that will be used by ZenTest |
+| `ZENTEST_STORAGE_URL`        | YES      | URL for storage provider that will be used by ZenTest  |
+| `ZENTEST_STORAGE_BUCKET`     | YES      | The bucket ZenTest will use for storing uploaded files |
+| `ZENTEST_STORAGE_ACCESS_KEY` | YES      | Access key for the storage provider                    |
+| `ZENTEST_STORAGE_SECRET_KEY` | YES      | Secret key for the storage provider                    |
+
+#### Health checks
+
+The ZenTest server exposes three endpoints for health checks on port 9000:
+
+- `/health` - used for generic health checks, responds with 500 when the server is not ready or
+  shutting down, or 200 otherwise
+- `/live` - used with Kubernetes liveness probes
+- `/ready` - used with Kubernetes readiness probes
+
+/ready
+The endpoint responds:
+
+200 status code, message "SERVER_IS_READY".
+500 status code, message "SERVER_IS_NOT_READY".
+Used to configure readiness probe.
 
 ### ZenTest Cloud
 
@@ -51,11 +68,11 @@ the private beta waitlist [here](https://forms.gle/k3avjtC7rJ2iWbrYA).
 
 ## Configuration
 
-* Once deployed, navigate to your ZenTest instance.
-* Click on "Targets"
-* Click on "+ Add"
-* Enter a label for your target and click "Create".
-* Copy the API key for your newly generated target.
+- Once deployed, navigate to your ZenTest instance.
+- Click on "Targets"
+- Click on "+ Add"
+- Enter a label for your target and click "Create".
+- Copy the API key for your newly generated target.
 
 ## Test Reporters
 
@@ -88,17 +105,19 @@ export default defineConfig({
 ```
 
 #### Reporter options
-| Environment Variable | Required | Description |
-| --- | --- | --- |
-| `apiUrl` | YES | The URL at which your ZenTest server will be available |
-| `apiKey` | YES | The API key for the target you are using |
-| `reportId` | NO | The report ID to associate with these test results |
-| `reportLabel` | NO | A human readable label for the report |
-| `reportUrl` | NO | A URL to associate with the report |
-| `runId` | NO | The run ID to associate with these test results |
+
+| Environment Variable | Required | Description                                            |
+| -------------------- | -------- | ------------------------------------------------------ |
+| `apiUrl`             | YES      | The URL at which your ZenTest server will be available |
+| `apiKey`             | YES      | The API key for the target you are using               |
+| `reportId`           | NO       | The report ID to associate with these test results     |
+| `reportLabel`        | NO       | A human readable label for the report                  |
+| `reportUrl`          | NO       | A URL to associate with the report                     |
+| `runId`              | NO       | The run ID to associate with these test results        |
 
 #### GitHub Actions Example
-If you're using GitHub Actions, you could configure your reporter like this for `pull_request` 
+
+If you're using GitHub Actions, you could configure your reporter like this for `pull_request`
 workflows:
 
 ```typescript
@@ -124,6 +143,7 @@ export default defineConfig({
 
 To populate `GITHUB_PR_TITLE` and `GITHUB_PR_NUMBER`, you'll need to set it as an environment variable in your
 workflow as shown in the [docs](https://docs.github.com/en/actions/learn-github-actions/variables#defining-environment-variables-for-a-single-workflow):
+
 ```yaml
 env:
   GITHUB_PR_NUMBER: github.event.number
