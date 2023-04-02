@@ -11,10 +11,19 @@ import Restana, {
 } from "restana";
 import serveStatic from "serve-static";
 import z from "zod";
-import { api, Api, Method, Redirect, Route, RoutesByMethod } from "@zentest/api";
+import {
+  api,
+  Api,
+  Method,
+  Redirect,
+  Route,
+  RoutesByMethod,
+} from "@zentest/api";
 import { PrismaClient } from "../generated/prisma/index.js";
 import { bodyParser } from "../middleware/bodyParser.js";
 import { Configuration } from "./configuration.js";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 type RouteConfig<TRoute extends Route<any, any, any, any, any>> = {
   middleware?: Middleware[];
@@ -63,6 +72,8 @@ type ParsedMultipart = {
   fields: Record<string, string>;
   files: Record<string, formidable.File>;
 };
+
+const PUBLIC_DIR = fileURLToPath(new URL("../public", import.meta.url));
 
 const sendResult = (result: any, res: ServerResponse & ResponseExtensions) => {
   if (result instanceof Readable) {
@@ -200,10 +211,19 @@ export const createApp = ({
     }
   }
 
-  app.get(
-    "*",
-    serveStatic(fileURLToPath(new URL("../public", import.meta.url)))
-  );
+  app.get("*", serveStatic(PUBLIC_DIR));
+
+  let content = "";
+
+  app.get("*", (req, res) => {
+    if (!content) {
+      content = readFileSync(join(PUBLIC_DIR, "index.html"), "utf8");
+    }
+
+    res.send(content, 200, {
+      "Content-Type": "text/html",
+    });
+  });
 
   return app;
 };
