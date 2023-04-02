@@ -30,6 +30,7 @@
     "cors": "^2.8.5",
     "formidable": "^2.1.1",
     "got": "^12.6.0",
+    "lightship": "^7.1.1",
     "minio": "^7.0.32",
     "playwright-core": "1.33.0-alpha-mar-22-2023",
     "prisma": "^4.12.0",

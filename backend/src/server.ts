@@ -1,3 +1,4 @@
+import { default as Lightship } from "lightship";
 import { createConfiguration } from "./factories/configuration.js";
 import { createApp } from "./factories/router.js";
 import { createMinioClient } from "./factories/minio.js";
@@ -48,6 +49,12 @@ const app = createApp({
     },
   },
 });
+const lightship = await Lightship.createLightship();
+
+lightship.registerShutdownHandler(async () => {
+  await app.close();
+  await prisma.$disconnect();
+});
 
 await migrate();
 
@@ -56,5 +63,7 @@ if (configuration.seed) {
 }
 
 await app.start(configuration.port);
+
+lightship.signalReady();
 
 console.log(`Listening on port ${configuration.port}`);
