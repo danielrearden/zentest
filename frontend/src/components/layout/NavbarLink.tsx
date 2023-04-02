@@ -28,6 +28,7 @@ export const NavbarLink = (props: NavbarLinkProps) => {
         href={href}
         label={label}
         icon={<LinkIcon size="1.5rem" />}
+        target="_blank"
       />
     );
   }
