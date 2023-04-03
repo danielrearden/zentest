@@ -39,7 +39,7 @@ export const Navbar = () => {
         <NavbarLink to="/targets" label="Targets" icon={Target} />
         <Divider my="sm" />
         <NavbarLink
-          href="https://zentest.dev"
+          href="https://zentest.dev/docs/getting-started"
           label="Documentation"
           icon={Book2}
         />
