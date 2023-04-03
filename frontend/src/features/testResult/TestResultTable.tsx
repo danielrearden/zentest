@@ -42,7 +42,6 @@ export const TestResultTable = ({ reportUid }: TestResultTableProps) => {
             <th>FILE</th>
             <th>TITLE</th>
             <th>PROJECT</th>
-            <th>RUN ID</th>
             <th>SHARD</th>
             <th>REPEAT</th>
             <th>RETRY</th>
@@ -64,7 +63,6 @@ export const TestResultTable = ({ reportUid }: TestResultTableProps) => {
                 <td>{testResult.testCase.filePath}</td>
                 <td>{testResult.testCase.titleShort}</td>
                 <td>{testResult.projectName ?? "-"}</td>
-                <td>{testResult.runId}</td>
                 <td>{testResult.shardIndex ?? "-"}</td>
                 <td>{testResult.repeatEachIndex}</td>
                 <td>{testResult.retryIndex}</td>

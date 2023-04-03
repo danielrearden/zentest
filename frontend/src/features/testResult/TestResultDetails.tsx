@@ -8,6 +8,9 @@ type TestResultDetailsProps = {
 };
 
 export const TestResultDetails = ({ testResult }: TestResultDetailsProps) => {
+  const startedAt = new Date(testResult.startedAt);
+  const finishedAt = new Date(startedAt.getTime() + testResult.durationMs);
+
   return (
     <Table withBorder withColumnBorders>
       <tbody>
@@ -20,7 +23,7 @@ export const TestResultDetails = ({ testResult }: TestResultDetailsProps) => {
         <tr>
           <td width="25%">
             <Anchor component={Link} to={`/reports/${testResult.report.uid}`}>
-              {testResult.report.uid}
+              {testResult.report.label}
             </Anchor>
           </td>
           <td width="25%">{testResult.shardIndex ?? "-"}</td>
@@ -29,16 +32,14 @@ export const TestResultDetails = ({ testResult }: TestResultDetailsProps) => {
         </tr>
         <tr>
           <th>PROJECT</th>
-          <th>RUN ID</th>
           <th>STARTED AT</th>
+          <th>FINISHED AT</th>
           <th>DURATION</th>
         </tr>
         <tr>
           <td width="25%">{testResult.projectName ?? "-"}</td>
-          <td width="25%">{testResult.runId}</td>
-          <td width="25%">
-            {new Date(testResult.startedAt).toLocaleString("en-US")}
-          </td>
+          <td width="25%">{startedAt.toLocaleString("en-US")}</td>
+          <td width="25%">{finishedAt.toLocaleString("en-US")}</td>
           <td width="25%">{prettyMilliseconds(testResult.durationMs)}</td>
         </tr>
       </tbody>

@@ -93,7 +93,6 @@ export const uploadTestResultRoute = createRoute(
         retryIndex: payload.retryIndex,
         reporter: payload.reporter,
         reportId: report.id,
-        runId: payload.runId,
         shardIndex: payload.shardIndex,
         startedAt: payload.startedAt,
         status: payload.status,
@@ -133,6 +132,16 @@ export const uploadTestResultRoute = createRoute(
           testResultId: testResult.id,
           uploadBucketName: configuration.storageBucket,
           uploadObjectName: attachment.name,
+        };
+      }),
+    });
+
+    await prisma.tag.createMany({
+      data: Object.entries(payload.tags).map(([key, value]) => {
+        return {
+          key,
+          value,
+          testResultId: testResult.id,
         };
       }),
     });
@@ -210,6 +219,7 @@ export const getTestResultRoute = createRoute(
             target: true,
           },
         },
+        tags: true,
         testCase: true,
       },
       where: {

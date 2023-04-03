@@ -20,11 +20,17 @@ export default defineConfig({
     [
       "./reporters/playwright/dist/index.js",
       {
-        apiKey: "2716dfff-fce6-4a53-be3b-36db7e31bbea",
+        apiKey: "00000000-0000-0000-0000-000000000000",
         apiUrl: `http://localhost:${process.env.ZENTEST_PORT}`,
-        reportId: "SOME_OTHER_PR",
-        reportLabel: "Another label",
-        reportUrl: "https://playwright.dev",
+        reportId: "123456789",
+        reportLabel: "My lovely Pull Request",
+        reportUrl: "https://github.com",
+        tags: {
+          prAuthor: "danielrearden",
+          prNumber: "456",
+          runAttempt: "1",
+          sha: "ec83d01dcaebf369444d75ed04b3625a0a645eb9",
+        },
       },
     ],
   ],

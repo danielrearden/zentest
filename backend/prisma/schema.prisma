@@ -63,12 +63,12 @@ model TestResult {
   reporter String
   reportId Int
   report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  runId String
   shardIndex Int?
   status TestResultStatus
   startedAt DateTime
   stderr String?
   stdout String?
+  tags Tag[]
   testCaseId Int
   testCase TestCase @relation(fields: [testCaseId], references: [id], onDelete: Cascade)
 }
@@ -103,4 +103,14 @@ model Error {
   stack String?
   testResultId Int
   testResult TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  key String
+  value String
+  testResultId Int
+  testResult TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+  @@unique([key, testResultId])
 }

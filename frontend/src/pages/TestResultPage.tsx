@@ -7,6 +7,7 @@ import { TestResultAttachments } from "@/features/testResult/TestResultAttachmen
 import { TestResultDetails } from "@/features/testResult/TestResultDetails.js";
 import { TestResultErrors } from "@/features/testResult/TestResultErrors.js";
 import { TestResultFileLink } from "@/features/testResult/TestResultFileLink.js";
+import { TestResultTags } from "@/features/testResult/TestResultTags.js";
 
 export const TestResultPage = () => {
   const params = useParams();
@@ -33,19 +34,12 @@ export const TestResultPage = () => {
 
       <TestResultDetails testResult={testResult} />
 
-      <Title order={4} mt="sm">
-        Annotations
-      </Title>
+      <TestResultTags testResult={testResult} />
+
       <TestResultAnnotations testResult={testResult} />
 
-      <Title order={5} mt="sm">
-        Errors
-      </Title>
       <TestResultErrors testResult={testResult} />
 
-      <Title order={5} mt="sm">
-        Attachments
-      </Title>
       <TestResultAttachments testResult={testResult} />
     </Stack>
   );

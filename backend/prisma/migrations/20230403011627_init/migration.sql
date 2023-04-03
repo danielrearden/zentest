@@ -45,7 +45,6 @@ CREATE TABLE "TestResult" (
     "retryIndex" INTEGER NOT NULL,
     "reporter" TEXT NOT NULL,
     "reportId" INTEGER NOT NULL,
-    "runId" TEXT NOT NULL,
     "shardIndex" INTEGER,
     "status" "TestResultStatus" NOT NULL,
     "startedAt" TIMESTAMP(3) NOT NULL,
@@ -94,6 +93,17 @@ CREATE TABLE "Error" (
     CONSTRAINT "Error_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Tag" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "testResultId" INTEGER NOT NULL,
+
+    CONSTRAINT "Tag_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Target_apiKey_key" ON "Target"("apiKey");
 
@@ -102,6 +112,9 @@ CREATE UNIQUE INDEX "Report_uid_key" ON "Report"("uid");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "TestCase_filePath_titleLong_key" ON "TestCase"("filePath", "titleLong");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Tag_key_testResultId_key" ON "Tag"("key", "testResultId");
 
 -- AddForeignKey
 ALTER TABLE "Report" ADD CONSTRAINT "Report_targetId_fkey" FOREIGN KEY ("targetId") REFERENCES "Target"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -120,3 +133,6 @@ ALTER TABLE "Annotation" ADD CONSTRAINT "Annotation_testResultId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "Error" ADD CONSTRAINT "Error_testResultId_fkey" FOREIGN KEY ("testResultId") REFERENCES "TestResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Tag" ADD CONSTRAINT "Tag_testResultId_fkey" FOREIGN KEY ("testResultId") REFERENCES "TestResult"("id") ON DELETE CASCADE ON UPDATE CASCADE;

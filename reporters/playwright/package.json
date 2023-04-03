@@ -29,6 +29,8 @@
   "dependencies": {
     "@playwright/test": "^1.31.2",
     "@zentest/api": "workspace:*",
+    "boxen": "^7.0.2",
+    "chalk": "^5.2.0",
     "formdata-node": "^5.0.0",
     "got": "^12.6.0",
     "zod": "^3.21.4"

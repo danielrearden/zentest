@@ -63,7 +63,6 @@ export const TestResultSchema = z.object({
   repeatEachIndex: z.number(),
   report: ReportSchema,
   retryIndex: z.number(),
-  runId: z.string(),
   shardIndex: z.number().nullable(),
   startedAt: SerializedDateSchema,
   status: z.enum(["PASSED", "FAILED", "FLAKY", "SKIPPED"]),
@@ -100,10 +99,19 @@ export const ErrorSchema = z.object({
 
 export type Error = z.output<typeof ErrorSchema>;
 
+export const TagSchema = z.object({
+  id: z.number(),
+  key: z.string(),
+  value: z.string(),
+});
+
+export type Tag = z.output<typeof TagSchema>;
+
 export const TestResultWithDetailsSchema = TestResultSchema.extend({
   annotations: z.array(AnnotationSchema),
   attachments: z.array(AttachmentSchema),
   errors: z.array(ErrorSchema),
+  tags: z.array(TagSchema),
 });
 
 export type TestResultWithDetails = z.output<
@@ -247,12 +255,12 @@ export const api = {
             reportLabel: z.string(),
             reportUid: z.string(),
             reportUrl: z.string().nullable(),
-            runId: z.string(),
             shardIndex: z.number().nullable(),
             startedAt: z.string(),
             status: z.enum(["PASSED", "FAILED", "FLAKY", "SKIPPED"]),
             stderr: z.string().nullable(),
             stdout: z.string().nullable(),
+            tags: z.record(z.string()),
             titleLong: z.string(),
             titleShort: z.string(),
           }),

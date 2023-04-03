@@ -8,6 +8,8 @@ import {
   TestCase,
   TestResult,
 } from "@playwright/test/reporter.js";
+import boxen from "boxen";
+import chalk from "chalk";
 import got from "got";
 import { FormData } from "formdata-node";
 import { fileFromPath } from "formdata-node/file-from-path";
@@ -24,7 +26,7 @@ export type ZenTestReporterOptions = {
   reportId?: string;
   reportLabel?: string;
   reportUrl?: string;
-  runId?: string;
+  tags?: Record<string, string>;
 };
 
 export type ZenTestReporterOptionsWithDefaults = {
@@ -33,7 +35,7 @@ export type ZenTestReporterOptionsWithDefaults = {
   reportId: string;
   reportLabel: string;
   reportUrl: string | null;
-  runId: string;
+  tags: Record<string, string>;
 };
 
 export default class ZenTestReporter implements Reporter {
@@ -46,12 +48,30 @@ export default class ZenTestReporter implements Reporter {
       reportId: options.reportId ?? randomUUID(),
       reportLabel: options.reportLabel ?? "Playwright",
       reportUrl: options.reportUrl ?? null,
-      runId: randomUUID(),
+      tags: options.tags ?? {},
     };
   }
 
   public async onBegin(config: FullConfig) {
     this.config = config;
+
+    console.log(
+      "\n" +
+        chalk.hex("#4eaaa5")(
+          boxen(
+            `View your ZenTest report: ${chalk.white.bold(
+              new URL(
+                `/reports/${this.options.reportId}`,
+                this.options.apiUrl
+              ).toString()
+            )}`,
+            {
+              padding: 1,
+              borderStyle: "bold",
+            }
+          )
+        )
+    );
   }
 
   public async onTestEnd?(test: TestCase, result: TestResult) {
@@ -99,7 +119,6 @@ export default class ZenTestReporter implements Reporter {
       reportUid: this.options.reportId,
       reportLabel: this.options.reportLabel,
       reportUrl: this.options.reportUrl,
-      runId: this.options.runId,
       shardIndex: this.config?.shard?.current ?? null,
       startedAt: result.startTime.toISOString(),
       status:
@@ -112,6 +131,7 @@ export default class ZenTestReporter implements Reporter {
           : "FAILED",
       stderr: result.stderr.map((value) => value.toString).join("\n"),
       stdout: result.stdout.map((value) => value.toString).join("\n"),
+      tags: this.options.tags,
       titleLong: this.formatLongTitle(test),
       titleShort: test.title,
     };

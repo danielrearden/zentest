@@ -15,8 +15,8 @@ of your choice.
 docker run -it --rm \
   -p 3000:3000 \
   -e "ZENTEST_PUBLIC_URL=http://localhost:3000" \
-  -e "ZENTEST_DATABASE_URL=postgresql://zentest:zentest@localhost:5436/zentest?schema=public" \
-  -e "ZENTEST_STORAGE_URL=http://localhost:9000" \
+  -e "ZENTEST_DATABASE_URL=postgresql://zentest:zentest@host.docker.internal:5436/zentest?schema=public" \
+  -e "ZENTEST_STORAGE_URL=http://host.docker.internal:9000" \
   -e "ZENTEST_STORAGE_BUCKET=mybucket" \
   -e "ZENTEST_STORAGE_ACCESS_KEY=zentest" \
   -e "ZENTEST_STORAGE_SECRET_KEY=zentest1" \
@@ -112,7 +112,7 @@ export default defineConfig({
 | `reportId`           | NO       | The report ID to associate with these test results     |
 | `reportLabel`        | NO       | A human readable label for the report                  |
 | `reportUrl`          | NO       | A URL to associate with the report                     |
-| `runId`              | NO       | The run ID to associate with these test results        |
+| `tags`               | NO       | Tags to associate with the generated test results      |
 
 #### GitHub Actions Example
 
@@ -122,17 +122,24 @@ workflows:
 ```typescript
 export default defineConfig({
   reporter: [
-    [
-      "@zentest/playwright-reporter",
-      {
-        apiKey: "YOUR_API_KEY",
-        apiUrl: "YOUR_API_URL",
-        reportId: process.env.GITHUB_RUN_ID,
-        reportLabel: process.env.GITHUB_PR_TITLE,
-        reportUrl: `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`,
-        runId: `${process.env.GITHUB_RUN_ID}:${process.env.GITHUB_RUN_ATTEMPT},
-      },
-    ],
+    process.env.CI
+      ? [
+        "@zentest/playwright-reporter",
+        {
+          apiKey: "YOUR_API_KEY",
+          apiUrl: "YOUR_API_URL",
+          reportId: process.env.GITHUB_RUN_ID,
+          reportLabel: `${process.env.GITHUB_PR_TITLE}`,
+          reportUrl: `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`,
+          tags: {
+            prAuthor: process.env.GITHUB_PR_AUTHOR,
+            prNumber: process.env.GITHUB_PR_NUMBER,
+            runAttempt: process.env.GITHUB_RUN_ATTEMPT,
+            sha: process.env.GITHUB_PR_SHA,
+          },
+        },
+      ],
+      : ["html"],
   ],
   // The rest of your configuration...
 });
@@ -140,25 +147,19 @@ export default defineConfig({
 
 :::note
 
-To populate `GITHUB_PR_TITLE` and `GITHUB_PR_NUMBER`, you'll need to set it as an environment variable in your
+To populate some of the environment variables shown above, you'll need to set it as an environment variable in your
 workflow as shown in the [docs](https://docs.github.com/en/actions/learn-github-actions/variables#defining-environment-variables-for-a-single-workflow):
 
 ```yaml
 env:
   GITHUB_PR_NUMBER: github.event.number
   GITHUB_PR_TITLE: github.event.pull_request.title
+  GITHUB_PR_AUTHOR: github.event.pull_request.user.login
+  GITHUB_PR_SHA: github.event.pull_request.head.sha
 ```
 
 :::
 
-This configuration will group your test results by the GitHub Actions run ID and additionally
-segment them based on the attempt number. This is an example configuration; you can group your test
-results by pull request number, commit SHA, individual run attempt or whatever makes sense for your
-organization.
-
-:::tip
-
-To disable the reporter outside of your CI workflows, you can conditionally push it to the `reporter`
-array in the config based on the presence of `process.env.CI` or some other environment variable.
-
-:::
+This configuration will group your test results by the GitHub Actions run ID and provide additional
+metadata about the associated pull request. This is an example configuration; you can group and tag
+your tests in whatever way makes sense for your organization.
